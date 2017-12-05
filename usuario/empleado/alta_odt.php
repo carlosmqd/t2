@@ -119,64 +119,136 @@
 <center><h4>Alta ODT </h4></center>
 <br>
 <?php 
-if ($_SESSION['check'] == null){
-$_SESSION['check']=0;
-}
 
-$check = $_SESSION['check'];
-if ($_SESSION['check'] == 1) { ?>
+$checkg=0;
+
+if (ISSET($_GET['idcheck'] )== null ){}else {$checkg = $_GET['idcheck']; }
+
+if (ISSET($_GET['s'] )== null ){$s=0;}else{echo $s = $_GET['s'];}
+
+
+
+if ($checkg == 1) { ?>
+
+<?php
+    if(isset($_GET['id']))
+    {
+        $location=$_GET['id'];
+        echo $location;
+    ?>
+    <script>
+        var myselect = document.getElementById("myselect");
+        myselect.options.selectedIndex = <?php echo $_GET["pos"]; ?>
+    </script>
+    <?php
+    }
+    ?>
+
 <div class="form-check mb-2 mr-sm-2 mb-sm-0">
     <label class="form-check-label"  for="check_id_1">
-      <input class="form-check-input" checked="" name="check" id="check_id_1" type="checkbox"  onClick="window.location='onClick="href=alta_odt.php"/> Sin MA
+      <input class="form-check-input" checked="" name="check" id="check_id_1" type="checkbox" onclick="window.location = 'alta_odt.php?idcheck=0'"/> Sin MA
     </label>
   </div>
-
-<form class="form-inline" action="" method="get">
-
 <div class="input-group mb-2 mr-sm-2 mb-sm-0">
     <div class="input-group-addon"></div>
-    <input type="text" class="form-control" id="inlineFormInputGroup" placeholder="C.C">
-  </div>
+    
+<select  class="col-lg-2 form-control"  id="myselect" name="cc" onchange="window.location='alta_odt.php?idcheck=1&id='+this.value+'&pos='+this.selectedIndex;" required> 
+			<option value="" >C.C</option>
+		   <?php 
+                       $i=0;
+
+			$result = mysqli_query($con,"SELECT * FROM centro_costos") or die("Error: ".mysqli_error($con));
+		
+		   while($row = mysqli_fetch_array($result)){?>
+                            
+                              
+				 <?php if($i+2 ==  $location){  ?>  
+                          <option value="<?php echo $row['idcostos'];?>" selected="selected"  ><?php echo $row['nombre'];?></option>   
+                              <?php } else {  ?>
+                                  <option value="<?php echo $row['idcostos'];?>"  ><?php echo $row['nombre'];?></option>
+				
+                                  
+           <?php } $i=$i+1; } ?>
+            
+			 </select>
+
+
+</div>
+<br>
+<form class="form-inline" action="crear_odt.php?odt=1" method="post">
+
+
 <br></br>
  <div class="input-group mb-2 mr-sm-2 mb-sm-0">
     <div class="input-group-addon"></div>
     <input type="text" class="form-control" id="inlineFormInputGroup" placeholder="Tiempo (hrs)">
   </div>
 
-  <label class="sr-only" for="inlineFormInputGroup">Username</label>
-  <div class="input-group mb-2 mr-sm-2 mb-sm-0">
+
+  <fieldset disabled>
+    <div class="input-group mb-2 mr-sm-2 mb-sm-0">
     <div class="input-group-addon"></div>
     <input type="text" class="form-control" id="inlineFormInputGroup" placeholder="Productos">
-  </div> <div class="input-group mb-2 mr-sm-2 mb-sm-0">
-    <div class="input-group-addon"></div>
+  </div> 
+
+   </fieldset ><fieldset disabled> 
+      <div class="input-group mb-2 mr-sm-2 mb-sm-0">
+       <div class="input-group-addon"></div>
+  
+    
     <input type="text" class="form-control" id="inlineFormInputGroup" placeholder="MSE">
-  </div>
+  </div></fieldset>
  
   
+<input type="submit" class="btn btn-primary" value="Crear">
 </form>	
-<a href="http://google.com" class="btn btn-primary" >Crear</a>
-<?php $_SESSION['check']=0;}
+<?php }
 else { ?>
  <div class="form-check mb-2 mr-sm-2 mb-sm-0">
     <label class="form-check-label"  for="check_id_1">
-      <input class="form-check-input" name="check" id="check_id_1" type="checkbox"  onClick="window.location=alta_odt.php"/> Sin MA
+      <input class="form-check-input" name="check" id="check_id_1" type="checkbox"  onclick="window.location = 'alta_odt.php?idcheck=1'"/> Sin MA
     </label>
+
+<div class="input-group mb-2 mr-sm-2 mb-sm-0">
+    <div class="input-group-addon"></div>
+  <select  class="col-lg-2 form-control"  id="myselect" name="ma" onchange="window.location='alta_odt.php?idcheck=0&id='+this.value+'&pos='+this.selectedIndex;" required> 
+			<option value="" selected="selected">MA</option>
+		   <?php 
+   
+			$result = mysqli_query($con,"SELECT * FROM ma") or die("Error: ".mysqli_error($con));
+		
+		   while($row = mysqli_fetch_array($result)){?>
+
+      
+				  <option value="<?php echo $row['idma'];?>"><?php echo $row['ma'];?></option>
+				 
+           <?php } ?>
+            
+			 </select>
   </div> 
 
-<form class="form-inline" action="" method="get">
-  <div class="input-group mb-2 mr-sm-2 mb-sm-0">
-    <div class="input-group-addon"></div>
-    <input type="text" class="form-control" id="inlineFormInputGroup" placeholder="MA">
-  </div>
-  <label class="sr-only" for="inlineFormInputGroup">Username</label>
+  
+ 
+
+
+ 
+
+<br>
+
+
+<form class="form-inline" action="crear_odt.php?odt=2"  method="post">
+  
+  <fieldset disabled>
   <div class="input-group mb-2 mr-sm-2 mb-sm-0">
     <div class="input-group-addon"></div>
     <input type="text" class="form-control" id="inlineFormInputGroup" placeholder="Descripcion">
-  </div>
+  </div></fieldset >
+<fieldset disabled>
 <div class="input-group mb-2 mr-sm-2 mb-sm-0">
     <div class="input-group-addon"></div>
-    <input type="text" class="form-control" id="inlineFormInputGroup" placeholder="C.C">
-  </div>
+    <input type="text" class="form-control" id="inlineFormInputGroup" name="cc" placeholder="C.C">
+  </div></fieldset >
+
 <br></br>
  <div class="input-group mb-2 mr-sm-2 mb-sm-0">
     <div class="input-group-addon"></div>
@@ -202,20 +274,25 @@ else { ?>
       &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</a>
   <label class="sr-only" for="inlineFormInputGroup">Username</label>
-  <div class="input-group mb-2 mr-sm-2 mb-sm-0">
+  <fieldset disabled>
+<div class="input-group mb-2 mr-sm-2 mb-sm-0">
     <div class="input-group-addon"></div>
     <input type="text" class="form-control" id="inlineFormInputGroup" placeholder="Productos">
-  </div> <div class="input-group mb-2 mr-sm-2 mb-sm-0">
+  </div> </fieldset >
+<fieldset disabled>
+<div class="input-group mb-2 mr-sm-2 mb-sm-0">
     <div class="input-group-addon"></div>
     <input type="text" class="form-control" id="inlineFormInputGroup" placeholder="MSE">
-  </div>
+  </div></fieldset >
  
+<input type="submit" class="btn btn-primary" value="Crear">
 
 </form>	
   
 
-<a href="http://google.com" class="btn btn-primary" >Crear</a>
-<?php $_SESSION['check']=1; } ?> 
+
+
+<?php  } ?> 
 
 <br>
 
@@ -296,6 +373,15 @@ else { ?>
     <!-- Bootstrap core JavaScript -->
     <script src="vendor/jquery/jquery.min.js"></script>
     <script src="vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+
+
+<script>
+function change(){
+    document.getElementById("myform").submit();
+}
+</script>
+
+
 
 	<script language="JavaScript">
 	/* Determinamos el tiempo total en segundos */
