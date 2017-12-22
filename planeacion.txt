@@ -1,0 +1,128 @@
+
+///pagina ODT's 
+Usuando la pagina reporte sap 
+
+
+->*Quitar observaciones
+
+->*colocar otros valores a la odt virtual ademas del consecutivo 
+->*mostrar odtREAL
+->*mostrar usuario
+->*colocar boton para colocar ODTREAL
+->crear pagina asignar odt REAL
+
+*colocar filtros 
+//epeciales unicos //posible mente un boton para mostrar este filtro
+->filtro por sin odtreal
+->filtro por odtcon casi un mes en funcionamiento 
+->filtro odt's cerradas
+->// trabajar en la pagina de odt usuario para ver las odt su estado
+ -> cerrarlas.
+
+
+
+********miercoles*********//filtros para combinaciones odts
+
+-filtro por usuario
+-filtro por C.C
+-filtro por fecha // año ,mes ,semana, fecha inicio fecha fin 
+-**proceso en un futuro
+-** filtro por ma
+
+
+
+-reporte pdf o excel
+*************jueves********
+-reporte de actividades con filtro(actividades normales, actividades fuera de planta,actividades emergentes,todas,vista para interrupciones)
+
+1/2-modificar reportes(pagina modificar.html)
+
+-pagina de agenda por usuario diaria
+
+
+//validar que no se registre el mismo horario(antes de enviar los datos hacer consulta 
+al horario del dia si lo que se quiere dar de alta esta en el rango no permitir enviar los datos)
+
+*crear tabla de horarios 
+obtenemos horario[$i]=12:15  y horas[$i] = 2 
+while(horario fijo[$i]<= 24)
+if(horario[$i] == horario fijo[$i])
+if( horas[$i] != null && horas[$i] >0 )
+while(horas[$i] > 0){
+*si horario (12:15) >= horario fijo 12:00 && < horario fijo +1 13:00 
+colocar color a tabla y actividad if( horas >0 )
+horario fijo[$i]= horario fijo[$i]+1 , horas = horas -1 
+}else{renglon sin datos horario fijo[$i]+1 }
+
+
+
+************viernes*********
+
+///usuario
+-ver uso de odt en la pagina
+-odt prorateada para actividades administrativas (where odt = 0 and odt.usuario =iduser)
+1/2-alta de actividades fuera de planta(pagina alta_fp.html)
+*crear una tabla para actividades fuera de planta(odt,tiempo,fecha inicio ,fecha fin ,comentario)
+
+*odt , tarea , tiempo , fecha  
+-no restar tiempo a la actividad con una interrupcion
+************martes*********
+-agregar nuevo usuario y modificar
+-modificar tabla de team board
+
+-modificar tablas actividades historico e index actividades(no de orden y revisar los datos)
+
+***********miercoles********
+
+-filtro kpi (administrador)
+
+//usuario
+-filtro kpi 
+-filtro historico o quitar
+
+-finalizar actividades al terminar el dia
+-eliminar pausas de la base de datos 
+-olvide contraseña 
+-cambiar el reloj por un slideclock
+
+
+
+///////////////////////////// filtro
+
+5-nada 
+6-empleado y cc
+7-solo fecha
+8-empleado
+9-cc
+
+///////meses
+
+10-nada
+11-empleado y cc
+12-solo meses
+13-empleado
+14-cc
+
+
+////rango meses
+
+15-nada
+16-empleado y cc
+17-solo meses
+18-empleado
+19-cc
+
+//rango años
+20-nada
+21-empleado y cc
+22-solo años
+23-empleado
+24-cc
+
+//filtro 0 
+25-nada
+26-empleado y cc
+27-solo años
+28-empleado
+29-cc
+
