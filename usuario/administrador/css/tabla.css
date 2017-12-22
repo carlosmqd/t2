@@ -1,0 +1,151 @@
+* { box-sizing: border-box; }
+ 
+body { font-family: sans-serif; }
+ 
+.header {
+    background-color: #216c8d;
+    color: white;
+    font-size: 1.5em;
+    padding: 1rem;
+    text-align: center;
+    text-transform: uppercase;
+}
+
+img {
+    border-radius: 50%;
+    height: 60px;
+    width: 60px;
+	 -webkit-filter: grayscale(0%); /* Safari 6.0 - 9.0 */
+    filter: grayscale(0%);
+  
+  
+  
+}
+img.top:hover {
+  -webkit-filter: grayscale(100%); /* Safari 6.0 - 9.0 */
+    filter: grayscale(100%);
+  
+}
+.table-users {
+    border: 1px solid #ccc;
+    max-width: calc(100% - 2em);
+    margin: 1em auto;
+    width: 800px;
+}
+ 
+table { width: 100%; }
+ 
+td, th { padding: 10px;background: #b1b1b1; }
+ 
+td {
+    text-align: center;
+    vertical-align: middle;
+}
+td:last-child {
+    font-size: 0.95em;
+    line-height: 1.4;
+    text-align: left;
+}
+ 
+th { background-color:  #8c8c8c }
+ 
+tr:nth-child(2n) { background-color: white; }
+tr:nth-child(2n+1) { background-color: #fafafa; }
+@media screen and (max-width: 700px) {
+    table, tr, td {
+        display: block;
+    }
+     
+    tr:first-child { display: none; }
+     
+    td:first-child {
+        position: absolute;
+        top: 50%;
+        transform: translateY(-50%);
+        width: 100px;
+    }
+    tr { 
+        padding: 10px 0; 
+        position: relative; 
+    }
+ 
+    td:not(:first-child) {
+        clear: both;
+        margin-left: 100px;
+        padding: 4px 20px 4px 100px;
+        position: relative;
+        text-align: left;
+    }
+     
+    td:not(:first-child):before {
+        color: #544d4d;
+        content: '';
+        display: block;
+        left: 0;
+        position: absolute;
+    }
+	
+    
+	td:nth-child(2):before { content: 'Apellido:'; }
+    td:nth-child(3):before { content: 'Estatus:'; }
+    td:nth-child(4):before { content: 'Actividad:'; }
+	td:nth-child(5):before { content: ''; }
+	td:nth-child(6):before { content: ''; }
+    td:nth-child(7):before { content: ''; }
+}
+@media screen and (max-width: 500px) {
+    .header {
+        background-color: transparent;
+        color: #f3f3f3;
+        font-size: 2em;
+        font-weight: 700;
+        padding: 0;
+        text-shadow: 2px 2px 0 rgba(0, 0, 0, 0.1);
+    }
+     
+    img {
+       border-radius: 50%;
+    height: 60px;
+    width: 60px;
+	display:block;
+	margin:0 auto 0 auto;
+    }
+     
+    td:first-child,
+    td:not(:first-child) {
+        padding: 5px 1em;
+        width: 100%;
+    }
+     
+    td:first-child {
+        background-color: #7a7a7a;
+        border-bottom: 1px solid #ddd;
+        position: relative;
+        top: 0;
+        transform: translateY(0);
+    }
+     
+    td:not(:first-child) { 
+        margin: 0; 
+    }
+    td:not(:first-child):before {
+        display: block;
+        font-size: .8em;
+        padding-top: 0.3em;
+        position: relative;
+    }
+     
+    td:last-child { padding-bottom: 1rem; }
+     
+    tr {
+        background-color: white !important;
+        border: 1px solid #ccc;
+        margin: 0.5rem 0;
+        padding: 0;
+    }
+     table { width: 100%;  margin-left: 32px;}
+    .table-users {
+        border: none;
+        box-shadow: none;
+    }
+}
