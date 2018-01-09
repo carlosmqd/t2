@@ -79,7 +79,7 @@ if (ISSET($_POST['comentario'])== null){
 	   $sql3 = "UPDATE actividad SET tiempo = '$tiempot',descripcion = '$comentario' Where idactividad='$id' ";
       mysqli_query($con,$sql3)or die(mysqli_error());
 	  
-	  
+	  /* //restar interrupciones a tiempo final de actividad
 	  $sqlinter="SELECT SUM(tiempo)as total FROM `interrupciones`,interrupcion WHERE interrupciones.idinterrup = interrupcion.idinterrup and idactividad ='$id' ";
 	     $resultinter = mysqli_query($con,$sqlinter)or die(mysqli_error());
         
@@ -91,10 +91,35 @@ if (ISSET($_POST['comentario'])== null){
   
 	  $sql4 = "UPDATE actividad set tiempo = (tiempo-INTERVAL '$int' MINUTE)  WHERE idactividad='$id' ";
       mysqli_query($con,$sql4)or die(mysqli_error());
-        // (Select COUNT(idinterupcion) WHERE idactividad = '$id' ) * (SELECT tiempo FROM actividad WHERE idactividad ='$id')
-	//UPDATE actividad set hora_fin = (hora_fin-INTERVAL 10 SECOND)  WHERE idactividad='$id'
+      */
+   $sqlodt="SELECT actividad.tiempo as t, odt.idodt,odt.tiempo FROM actividad, odt WHERE idactividad ='$id' and actividad.idodt = odt.idodt  ";
+	     $resulodt = mysqli_query($con,$sqlodt)or die(mysqli_error());
+        
+          while($rowodt=mysqli_fetch_array( $resulodt )) {
+	            
+	        $idodt = $rowodt['idodt'];
+ 		  $tiempoodt = $rowodt['tiempo'];
+                $tiempoact = $rowodt['t'];
+               
+		  }
 
-// ->pro SELECT SUM(tiempo)as total FROM `interrupciones`,interrupcion WHERE interrupciones.idinterrup = interrupcion.idinterrup and idactividad = 129  
+ $tiempoact = segundos_a_hora( $tiempoact);
+if($tiempoact > $tiempoodt ){
+
+$tiempoex = $tiempoact - $tiempoodt   ;
+
+  $tiempoex = hora_a_segundos($tiempoex);
+
+$sql5 = "UPDATE odt SET tiempo= 0,tiempo_excedido='$tiempoex',cerrada=1 WHERE idodt='$idodt' ";
+      mysqli_query($con,$sql5)or die(mysqli_error());
+}else{
+      $tiempof =  $tiempoodt -  $tiempoact ;
+ $sql5 = "UPDATE `odt` SET `tiempo` = '$tiempof' WHERE odt.idodt = '$idodt' ";
+      mysqli_query($con,$sql5)or die(mysqli_error());
+   }
+
+
+       
   } else if($btn=="reanudar")
   { 
 	$estado =  "Actividad Reanudada";
@@ -247,6 +272,16 @@ if (ISSET($_POST['comentario'])== null){
 		 }
 }
 
+function segundos_a_hora($hora) { 
+    list($h, $m, $s) = explode(':', $hora); 
+    return ($h * 3600) + ($m * 60) + $s; 
+} 
+function hora_a_segundos($segundos) { 
+    $h = floor($segundos / 3600); 
+    $m = floor(($segundos % 3600) / 60); 
+    $s = $segundos - ($h * 3600) - ($m * 60); 
+    return sprintf('%02d:%02d:%02d', $h, $m, $s); 
+}
 
  echo"<script type=\"text/javascript\"> window.location='index.php#one';</script>";
    
