@@ -3,8 +3,8 @@ include('../conexion.php');
 
 
 
-echo $id =$_GET['id'];
-echo $inter =$_POST['intr'];
+ $id =$_GET['id'];
+ $inter =$_POST['intr'];
 
 $sql ="INSERT INTO `interrupciones` (`idinterrupcion`, `idactividad`, `idinterrup`) VALUES (NULL, '$id', '$inter');";
 
