@@ -34,7 +34,7 @@
 	 <div id="" class="form-group">
       <div >       
           
-          <a href="recuperar_pass.php">olvidaste tu contraseña?</a>      
+              
       </div>
     </div>
     <div>
