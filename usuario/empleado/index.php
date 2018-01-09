@@ -43,7 +43,7 @@
 			  $activatiempo = 1;
 		  }*/
    
-	  
+	 $tipot=1; 
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -98,6 +98,9 @@
             </li>
             <li class="nav-item">
               <a class="nav-link" href="historico.php">Historico</a>
+            </li>
+			<li class="nav-item">
+              <a class="nav-link" href="alta_fp.php">Fuera de Planta</a>
             </li>
             <li class="nav-item">
               <a class="nav-link" href="estadisticas.php">Estadisticas</a>
@@ -173,20 +176,70 @@
      
  </div>
       </div>
+<?php
+    if(isset($_GET['id']))
+    {
+        $idodt=$_GET['id'];
+        if( $idodt <=10){
+$tipot=2;
+
+} else { $tipot=1;}
+    ?>
+    <script>
+        var myselect = document.getElementById("myselect");
+        myselect.options.selectedIndex = <?php echo $_GET["pos"]; ?>
+    </script>
+    <?php
+    }
+    ?>
 	  <div class="modal-wrapper" id="popup2">
    <div class="popup2-contenedor">
     <form action="crear_actividad.php?act=2&usr=<?php echo $idUser?>" method ="post">
-     <center> <h2>Actividad Emergente</h2></center>
-	 
-	  <center><select name="tarea">
-	  <option value ="1">Actualizar Servidor</option>
-      <option value ="2">Actualizar Base de datos</option>
-      <option value ="3">Verificar bancos de pruebas</option>	  </select></center>
-<br>
+     <center> <h6>Actividad Emergente</h6></center>
+	
+	<center><select  class="col-lg-2 form-control"  id="myselect" name="odt" onchange="window.location='index.php?idcheck=1&id='+this.value+'&pos='+this.selectedIndex+'#popup2';" required> 
+			<option value="">ODT</option>
+		   <?php 
+                       $i=0;
 
+			$result = mysqli_query($con,"SELECT * FROM odt where idusuario='$idUser ' or idodt < 10 and cerrada = 0 ") or die("Error: ".mysqli_error($con));
+		
+		   while($row = mysqli_fetch_array($result)){?>
+                            
+                              
+				 <?php if($i+1 ==  $location){  ?>  
+                          <option value="<?php echo $row['idodt'];?>" selected="selected"  ><?php echo $row['idodt'];?></option>   
+                              <?php } else {  ?>
+                                  <option value="<?php echo $row['idodt'];?>"  ><?php echo $row['idodt'];?></option>
+				
+                                  
+           <?php } $i=$i+1; } ?>
+            
+			 </select></center>
+			<br>
+	 <center> <select style="width:200px" class="col-lg-2 form-control"  id="myselect" name="tarea" required> 
+			<option value="">Tarea</option>
+		   <?php 
+                      
+			$result = mysqli_query($con,"SELECT * FROM tarea  where tipo = $tipot") or die("Error: ".mysqli_error($con));
+		
+		   while($row = mysqli_fetch_array($result)){?>
+
+      
+
+                              <option value="<?php echo $row['idtarea'];?>"><?php echo $row['nombre'];?></option>
+                             
+                             
+                                  
+           <?php  } ?>
+            
+            
+			 </select></center>
+	   <br>
+	  
 <center>Inicio<div style="width: 120px"  class="input-group clockpicker" data-placement="top" data-align="center" data-donetext="Done">
 
-	<input name="inicio" type="text" class="form-control" value="00:00">
+	<input name="inicio" type="text" class="form-control" value="00:00" required>
 			
 	<span class="input-group-addon">
 				
@@ -199,44 +252,93 @@
 		
 	</div>  
 
-Fin<div style="width: 120px "  class="input-group clockpicker" data-placement="top" data-align="center" data-donetext="Done">
+<br>
+    <center> <select style="width:200px" class="col-lg-2 form-control"  id="myselect" name="fin"  required> 
+			<option value="">horas</option>
+		   <?php
+    for ($i=1; $i<=10; $i++)
+    {
+        ?>
+            <option value="<?php echo $i;?>"><?php echo $i;?></option>
+        <?php
+    }
+?>
+</select>
+            
+            
+			 </select></center>
+  </center> </center>
+<br>
 
-	 <input name="fin" type="text" class="form-control" value="00:00">
-			
-	<span class="input-group-addon">
-				
-    	<span class="fa fa-clock-o">
-	</span>
-			
-	</span>
-	
- 
-		
-	</div> </center>
- 
-
-	  <br></br>
-      <center><input type="submit" value="crear"></center>
+    
+      <center><input type="submit" class="btn btn-info" value="crear"></center>
 	  <a class="popup2-cerrar" href="#">X</a>
 	  </form>
    </div>
    </div>
    	  <!-- popup -->
-   
+   <?php
+    if(isset($_GET['pos']))
+    {
+        $location=$_GET['pos'];
+       
+    ?>
+    <script>
+        var myselect = document.getElementById("myselect");
+        myselect.options.selectedIndex = <?php echo $_GET["pos"]; ?>
+    </script>
+    <?php
+    }
+    ?>
+
 <div class="modal-wrapper" id="popup1">
    <div class="popup1-contenedor">
    <form action="crear_actividad.php?act=1&usr=<?php echo $idUser?>" method ="post">
-     <center> <h2>Actividad Planeada</h2></center>
-	  
-	  <center><select name="tarea">
-	  <option value ="1">Actualizar Servidor</option>
-      <option value ="2">Actualizar Base de datos</option>
-      <option value ="3">Verificar bancos de pruebas</option>	  </select></center>
+     <center> <h6>Actividad Planeada</h6></center>
+	
+                         <center><select  class="col-lg-2 form-control"  id="myselect" name="odt" onchange="window.location='index.php?idcheck=1&id='+this.value+'&pos='+this.selectedIndex+'#popup1';" required> 
+			<option value="">ODT</option>
+		   <?php 
+                       $i=0;
+
+			$result = mysqli_query($con,"SELECT * FROM odt where idusuario='$idUser ' or idodt < 10 and cerrada = 0 ") or die("Error: ".mysqli_error($con));
+		
+		   while($row = mysqli_fetch_array($result)){?>
+                            
+                              
+				 <?php if($i+1 ==  $location){  ?>  
+                          <option value="<?php echo $row['idodt'];?>" selected="selected"  ><?php echo $row['idodt'];?></option>   
+                              <?php } else {  ?>
+                                  <option value="<?php echo $row['idodt'];?>"  ><?php echo $row['idodt'];?></option>
+				
+                                  
+           <?php } $i=$i+1; } ?>
+            
+			 </select></center>
+			<br>
+	 <center> <select style="width:200px" class="col-lg-2 form-control"  id="myselect" name="tarea" required> 
+			<option value="">Tarea</option>
+		   <?php 
+                      
+			$result = mysqli_query($con,"SELECT * FROM tarea where tipo = $tipot") or die("Error: ".mysqli_error($con));
+		
+		   while($row = mysqli_fetch_array($result)){?>
+
+      
+
+                              <option value="<?php echo $row['idtarea'];?>"><?php echo $row['nombre'];?></option>
+                             
+                             
+                                  
+           <?php  } ?>
+            
+            
+			 </select></center>
 	   <br>
 	  
 <center>Inicio<div style="width: 120px"  class="input-group clockpicker" data-placement="top" data-align="center" data-donetext="Done">
 
-	<input name="inicio" type="text" class="form-control" value="00:00">
+	<input name="inicio" type="text" class="form-control" value="00:00" required>
 			
 	<span class="input-group-addon">
 				
@@ -249,22 +351,25 @@ Fin<div style="width: 120px "  class="input-group clockpicker" data-placement="t
 		
 	</div>  
 
-Fin<div style="width: 120px"  class="input-group clockpicker" data-placement="top" data-align="center" data-donetext="Done">
-
-	 <input  name="fin" type="text" class="form-control" value="00:00">
-			
-	<span class="input-group-addon">
-				
-    	<span class="fa fa-clock-o">
-	</span>
-			
-	</span>
-	
- 
-		
-	</div> </center>
 <br>
-      <center><input type="submit" value="crear"></center>
+    <center> <select style="width:200px" class="col-lg-2 form-control"  id="myselect" name="fin"  required> 
+			<option value="">horas</option>
+		   <?php
+    for ($i=1; $i<=10; $i++)
+    {
+        ?>
+            <option value="<?php echo $i;?>"><?php echo $i;?></option>
+        <?php
+    }
+?>
+</select>
+            
+            
+			 </select></center>
+  </center> </center>
+<br>
+
+      <center><input type="submit" class="btn btn-info" value="crear"></center>
 	  <a class="popup1-cerrar" href="#">X</a>
 	  </form>
    </div>
@@ -303,7 +408,7 @@ Fin<div style="width: 120px"  class="input-group clockpicker" data-placement="to
 	 
 	    
 		 
-	 $miselect= " SELECT `idactividad`, tarea.nombre, `descripcion`, `hora_ini`, `hora_fin`, `tiempo`, `idtipoactividad`, estatus.nombre as nombre_estatus, actividad.idestatus,TIME_TO_SEC(timediff(now(),`hora_ini`)) as hora_act FROM `actividad` ,estatus,tarea where tarea.idtarea = actividad.idtarea and estatus.idestatus = actividad.idestatus and idusuario = '3' and ( DATE(hora_ini)=DATE(now()) or TIME(hora_ini) = '00:00:00') ORDER BY `actividad`.`idactividad` DESC ";
+	 $miselect= " SELECT `idactividad`, tarea.nombre, `descripcion`, `hora_ini`, `hora_fin`, `tiempo`, `idtipoactividad`, estatus.nombre as nombre_estatus, actividad.idestatus,TIME_TO_SEC(timediff(now(),`hora_ini`)) as hora_act ,idodt FROM `actividad` ,estatus,tarea where tarea.idtarea = actividad.idtarea and estatus.idestatus = actividad.idestatus and idusuario = '$idUser' and ( DATE(hora_ini)=DATE(now()) or TIME(hora_ini) = '00:00:00') ORDER BY `actividad`.`hora_fin` ASC ";
   $resultado = mysqli_query($con,$miselect)or die(mysqli_error());
   $i=0;
   while($row=mysqli_fetch_array($resultado)) {
@@ -324,7 +429,7 @@ Fin<div style="width: 120px"  class="input-group clockpicker" data-placement="to
 	$tiempo_actual[$i] = $row['hora_act'];
 	
 	$tiempofinal[$i] = $row['tiempo'];
-	
+	$idodt[$i]= $row['idodt'];
 	
   
 
@@ -333,7 +438,7 @@ Fin<div style="width: 120px"  class="input-group clockpicker" data-placement="to
 	?>
                  <tr>
 				<td><?php echo $nombre[$i] ?></td>
-				<td><?php echo $orden = $orden+1; ?></td>
+				<td><?php echo "000061-".$idodt[$i] ?></td>
                 <td><?php echo $nombreestatus[$i] ?></td>
                 <td><?php echo $tiempo[$i]?></td>
                 
@@ -341,7 +446,7 @@ Fin<div style="width: 120px"  class="input-group clockpicker" data-placement="to
 					 if($estatus[$i]==4){?>
 				        <td></td>
 						<td><a href ="validaractividad.php?id=<?php echo $id[$i]?>&btn=iniciar"><img class="top"src="img/start.jpg" alt="" /></a></td>	
-		                <td></td>
+		                <td><a href ="eliminar_actividad.php?id=<?php echo $id[$i]?>" class="btn btn-danger">eliminar</a></td>
 					<?php }if($estatus[$i]==1){?>
 						<td><a href ="validaractividad.php?id=<?php echo $id[$i]?>&btn=pausar"><img class="top" src="img/pause.jpg" alt="" /></a></td>
 				<td><a href="#popup3" ><img class="top" src="img/interupcion.jpg" alt="" /></a></td>
@@ -391,7 +496,7 @@ Fin<div style="width: 120px"  class="input-group clockpicker" data-placement="to
 
         <div class="row">
           <div class="col-lg-6 my-auto">
-           <center><h3>&copy; 2017 - TIP/TEF7  </h3></center>
+           <center><h3>&copy; 2018 - TIP/TEF7  </h3></center>
           </div>
           <div class="col-lg-6 my-auto">
                              
@@ -433,7 +538,8 @@ Fin<div style="width: 120px"  class="input-group clockpicker" data-placement="to
     
 	  <center><h3>Comentarios</h3> </center>
 	  <center>
-	  <input  type="text" name="comentario">
+          <textarea   name="comentario" class="form-control"  rows="2"></textarea>
+	 
 	  </center><br></br>
       <center><input  type="submit" value="registrar"></center>
 	  <a class="popup4-cerrar" href="#one">X</a>
