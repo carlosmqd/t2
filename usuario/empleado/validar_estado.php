@@ -10,3 +10,4 @@ $sql="UPDATE `usuarios` SET `idestado` = '$estado' WHERE `usuarios`.`idusuario` 
 echo"<script type=\"text/javascript\"> window.location='index.php';</script>";
  
 ?>
+
