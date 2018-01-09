@@ -10,7 +10,7 @@ if (!isset($_SESSION)) {
    $tipo="";
    $nombre="";
    $id="";
-  
+  $estado=0;
   
   $miselect= " SELECT * FROM usuarios WHERE usuario= '$User' and password= '$pass'  ";
   $resultado = mysqli_query($con,$miselect)or die(mysqli_error());
