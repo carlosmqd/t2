@@ -8,38 +8,7 @@
  }
  
  include('../conexion.php');
- 
- $sqlestado= " SELECT * FROM usuarios WHERE idusuario= $idUser  ";
-  $resultestado = mysqli_query($con,$sqlestado)or die(mysqli_error());
-  while($row1=mysqli_fetch_array($resultestado)) {
-     
-    
-	$estado = $row1['idestado'];
-	
-  }
-    $_SESSION['idestadotimer'] = $estado;
-   $orden =813512391;
-   $x=0;
-   $activatiempo = 1;
-   
-   
-	   $sqltiempo= " SELECT `idactividad`, tarea.nombre, `descripcion`, `hora_ini`, `hora_fin`, `tiempo`, `idtipoactividad`,  estatus.nombre as nombre_estatus, actividad.idestatus,TIME_TO_SEC(timediff(now(),`hora_ini`)) as hora_act FROM `actividad` ,estatus,tarea where estatus.idestatus = actividad.idestatus and idusuario = '3' ORDER BY `actividad`.`idactividad` DESC";
-  $resultiempo = mysqli_query($con,$sqltiempo)or die(mysqli_error());
-  $j=0;
-  while($rowt=mysqli_fetch_array($resultiempo)) {
-     
-  
-      $id[$j]= $rowt['idactividad'];
-	$tiempo_actual[$j] = $rowt['hora_act'];
-	
-	 $j=$j+1;
-  }
-   $actual = $_SESSION['tiempoactual']; 
-   
-   if($actual!=null){
-    $t=tiempo_total($id[ $actual],$con,1);
-	$tt = segundos_a_hora($t);
-   }
+
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -68,16 +37,11 @@
 
   <body>
 
-     <!-- Navigation -->
+      <!-- Navigation -->
     <nav class="navbar navbar-expand-lg navbar-light bg-light fixed-top">
       <div class="container">
         <a class="navbar-brand" href="#"><i class="fa fa-arrow-up  fa-fw"></i>Timer</a>
-		<?php if($activatiempo == 0){?>
-			<center><a style ="color:#f00">sin actividad</a> </center>
-			
-		<?php }else{?>
-		<center><a style ="color:#f00 "id='CuentaAtras'></a> </center>
-		<?php }?>
+		
         <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
           <span class="navbar-toggler-icon"></span>
         </button>
@@ -92,6 +56,9 @@
             <li class="nav-item">
               <a class="nav-link" href="historico.php">Historico</a>
             </li>
+			<li class="nav-item">
+              <a class="nav-link" href="alta_fp.php">Fuera de Planta</a>
+            </li>
             <li class="nav-item">
               <a class="nav-link" href="estadisticas.php">Estadisticas</a>
             </li >
@@ -102,20 +69,25 @@
         </div>
       </div>
     </nav>
-
  
    
     
     
 	<!-- Page Content -->
-  
+<br>
+<section id="a" class="content-section-a">
+  <center><a class="btn btn-success" href="ver_odt.php" role="button">ver mis ODT's</a></center>
+<br></section>
+      
 
     <section id="one" class="content-section-b">
 
       <div class="container">
 
        
-    <br></br>      
+    <br></br>
+
+
 <center><h4>Alta ODT </h4></center>
 <br>
 <?php 
@@ -131,10 +103,23 @@ if (ISSET($_GET['s'] )== null ){$s=0;}else{echo $s = $_GET['s'];}
 if ($checkg == 1) { ?>
 
 <?php
+    if(isset($_GET['pos']))
+    {
+        $location=$_GET['pos'];
+       
+    ?>
+    <script>
+        var myselect = document.getElementById("myselect");
+        myselect.options.selectedIndex = <?php echo $_GET["pos"]; ?>
+    </script>
+    <?php
+    }
+    ?>
+<?php
     if(isset($_GET['id']))
     {
-        $location=$_GET['id'];
-        echo $location;
+        $idcc=$_GET['id'];
+        
     ?>
     <script>
         var myselect = document.getElementById("myselect");
@@ -153,7 +138,7 @@ if ($checkg == 1) { ?>
     <div class="input-group-addon"></div>
     
 <select  class="col-lg-2 form-control"  id="myselect" name="cc" onchange="window.location='alta_odt.php?idcheck=1&id='+this.value+'&pos='+this.selectedIndex;" required> 
-			<option value="" >C.C</option>
+			<option value="">C.C</option>
 		   <?php 
                        $i=0;
 
@@ -162,7 +147,7 @@ if ($checkg == 1) { ?>
 		   while($row = mysqli_fetch_array($result)){?>
                             
                               
-				 <?php if($i+2 ==  $location){  ?>  
+				 <?php if($i+1 ==  $location){  ?>  
                           <option value="<?php echo $row['idcostos'];?>" selected="selected"  ><?php echo $row['nombre'];?></option>   
                               <?php } else {  ?>
                                   <option value="<?php echo $row['idcostos'];?>"  ><?php echo $row['nombre'];?></option>
@@ -171,24 +156,60 @@ if ($checkg == 1) { ?>
            <?php } $i=$i+1; } ?>
             
 			 </select>
+<?php 
 
+ if ( isset($idcc) != null  && $idcc != 0  ){
+$sqlma = "SELECT nombre,productos,mse FROM ma,centro_costos,mse WHERE centro_costos.idcostos = '$idcc'  and centro_costos.idmse =mse.idmse"; 
+$resultma = mysqli_query($con,$sqlma) or die("Error: ".mysqli_error($con));
+		
+
+              
+		   while($rowma = mysqli_fetch_array($resultma)){
+
+                       
+			$nombrecc=$rowma['nombre'];
+			$productocc=$rowma['productos'];
+			$msecc=$rowma['mse'];
+                      }
+
+
+
+	}else  { 
+			
+			$nombrecc="C.C";
+			$productocc="Producto";
+			$msecc="MSE";
+		}
+
+?>
 
 </div>
 <br>
-<form class="form-inline" action="crear_odt.php?odt=1" method="post">
+<form class="form-inline" action="crear_odt.php?odt=1&cc=<?php echo $idcc ?>" method="post">
 
 
 <br></br>
+ <br></br>
+<?php if ( isset($idcc) != null  && $idcc != 0  ){ ?>
  <div class="input-group mb-2 mr-sm-2 mb-sm-0">
     <div class="input-group-addon"></div>
-    <input type="text" class="form-control" id="inlineFormInputGroup" placeholder="Tiempo (hrs)">
+    <input type="text" class="form-control" id="inlineFormInputGroup" name="tiempo" placeholder="Tiempo (hrs)" required>
   </div>
+
+<?php }else { ?>
+<fieldset disabled>
+<div class="input-group mb-2 mr-sm-2 mb-sm-0">
+    <div class="input-group-addon"></div>
+    <input type="text" class="form-control" id="inlineFormInputGroup" name="tiempo" placeholder="Tiempo (hrs)" required>
+  </div>
+</fieldset >
+<?php } ?> 
 
 
   <fieldset disabled>
     <div class="input-group mb-2 mr-sm-2 mb-sm-0">
     <div class="input-group-addon"></div>
-    <input type="text" class="form-control" id="inlineFormInputGroup" placeholder="Productos">
+    <input type="text" class="form-control" id="inlineFormInputGroup" placeholder="<?php echo $productocc; ?>">
   </div> 
 
    </fieldset ><fieldset disabled> 
@@ -196,39 +217,100 @@ if ($checkg == 1) { ?>
        <div class="input-group-addon"></div>
   
     
-    <input type="text" class="form-control" id="inlineFormInputGroup" placeholder="MSE">
+    <input type="text" class="form-control" id="inlineFormInputGroup" placeholder="<?php echo $msecc; ?> ">
   </div></fieldset>
  
-  
-<input type="submit" class="btn btn-primary" value="Crear">
+  <?php if ( isset($idcc) != null  && $idcc != 0  ){ ?>
+   <input type="submit" class="btn btn-primary" value="Crear">
+<?php }else{ ?>
+
+<fieldset disabled><input type="submit" class="btn btn-primary" value="Crear"></fieldset>
+<?php } ?> 
 </form>	
 <?php }
 else { ?>
+<?php
+    if(isset($_GET['pos']))
+    {
+        $location=$_GET['pos'];
+       
+    ?>
+    <script>
+        var myselect = document.getElementById("myselect");
+        myselect.options.selectedIndex = <?php echo $_GET["pos"]; ?>
+    </script>
+    <?php
+    }
+    ?>
+<?php
+    if(isset($_GET['id']))
+    {
+        $idma=$_GET['id'];
+       
+    ?>
+    <script>
+        var myselect = document.getElementById("myselect");
+        myselect.options.selectedIndex = <?php echo $_GET["pos"]; ?>
+    </script>
+    <?php
+    }
+    ?>
  <div class="form-check mb-2 mr-sm-2 mb-sm-0">
     <label class="form-check-label"  for="check_id_1">
       <input class="form-check-input" name="check" id="check_id_1" type="checkbox"  onclick="window.location = 'alta_odt.php?idcheck=1'"/> Sin MA
     </label>
 
-<div class="input-group mb-2 mr-sm-2 mb-sm-0">
+  <div class="input-group mb-2 mr-sm-2 mb-sm-0">
     <div class="input-group-addon"></div>
   <select  class="col-lg-2 form-control"  id="myselect" name="ma" onchange="window.location='alta_odt.php?idcheck=0&id='+this.value+'&pos='+this.selectedIndex;" required> 
-			<option value="" selected="selected">MA</option>
+			<option value="">MA</option>
 		   <?php 
-   
+                       $i=0;
 			$result = mysqli_query($con,"SELECT * FROM ma") or die("Error: ".mysqli_error($con));
 		
 		   while($row = mysqli_fetch_array($result)){?>
 
       
-				  <option value="<?php echo $row['idma'];?>"><?php echo $row['ma'];?></option>
 				 
-           <?php } ?>
+				 
+            <?php   if($i+1 ==  $location){  ?>  
+
+                              <option value="<?php echo $row['idma'];?>"selected="selected"><?php echo $row['ma'];?></option>
+                             
+                              <?php } else {  ?>
+                                 <option value="<?php echo $row['idma'];?>"><?php echo $row['ma'];?></option>
+				
+                                  
+           <?php } $i=$i+1; } ?>
+            
             
 			 </select>
   </div> 
 
   
- 
+ <?php 
+
+  if ( isset($idma) != null  && $idma != 0  ){
+		$sqlma = "SELECT descripcion,nombre,productos,mse,centro_costos.idcostos as cc FROM ma,centro_costos,mse WHERE idma = '$idma' and ma.idcostos=centro_costos.idcostos and centro_costos.idmse =mse.idmse"; 
+		$resultma = mysqli_query($con,$sqlma) or die("Error: ".mysqli_error($con));
+		
+		   while($rowma = mysqli_fetch_array($resultma)){
+
+                        $descrip=$rowma['descripcion'];
+			$nombrecc=$rowma['nombre'];
+			$productocc=$rowma['productos'];
+			$mse=$rowma['mse'];
+                        $idcc=$rowma['cc'];
+                      }
+
+	}else  { 
+			$descrip="Descripcion";
+			$nombrecc="C.C";
+			$productocc="Producto";
+			$mse="MSE";
+		}
+
+?>
 
 
  
@@ -236,24 +318,34 @@ else { ?>
 <br>
 
 
-<form class="form-inline" action="crear_odt.php?odt=2"  method="post">
-  
+<form class="form-inline" action="crear_odt.php?odt=2&ma=<?php echo $idma ?>&cc=<?php echo $idcc ?>"  method="post">
+   
   <fieldset disabled>
   <div class="input-group mb-2 mr-sm-2 mb-sm-0">
     <div class="input-group-addon"></div>
-    <input type="text" class="form-control" id="inlineFormInputGroup" placeholder="Descripcion">
+    <input style="width:400px" type="text" class="form-control" id="inlineFormInputGroup" placeholder="<?php echo $descrip; ?>">
   </div></fieldset >
 <fieldset disabled>
 <div class="input-group mb-2 mr-sm-2 mb-sm-0">
     <div class="input-group-addon"></div>
-    <input type="text" class="form-control" id="inlineFormInputGroup" name="cc" placeholder="C.C">
+    <input type="text" class="form-control" id="inlineFormInputGroup" name="cc" placeholder="<?php echo $nombrecc; ?>">
   </div></fieldset >
 
 <br></br>
+<?php if ( isset($idma) != null  && $idma != 0  ){ ?>
  <div class="input-group mb-2 mr-sm-2 mb-sm-0">
     <div class="input-group-addon"></div>
-    <input type="text" class="form-control" id="inlineFormInputGroup" placeholder="Tiempo (hrs)">
+    <input type="text" class="form-control" id="inlineFormInputGroup" name="tiempo" placeholder="Tiempo (hrs)" required>
   </div>
+
+<?php }else { ?>
+<fieldset disabled>
+<div class="input-group mb-2 mr-sm-2 mb-sm-0">
+    <div class="input-group-addon"></div>
+    <input type="text" class="form-control" id="inlineFormInputGroup" name="tiempo" placeholder="Tiempo (hrs)" required>
+  </div>
+</fieldset >
+<?php } ?> 
 
    <a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
      &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
@@ -277,15 +369,20 @@ else { ?>
   <fieldset disabled>
 <div class="input-group mb-2 mr-sm-2 mb-sm-0">
     <div class="input-group-addon"></div>
-    <input type="text" class="form-control" id="inlineFormInputGroup" placeholder="Productos">
+    <input type="text" class="form-control" id="inlineFormInputGroup" placeholder="<?php echo $productocc; ?>">
   </div> </fieldset >
 <fieldset disabled>
 <div class="input-group mb-2 mr-sm-2 mb-sm-0">
     <div class="input-group-addon"></div>
-    <input type="text" class="form-control" id="inlineFormInputGroup" placeholder="MSE">
+    <input type="text" class="form-control" id="inlineFormInputGroup" placeholder="<?php echo $mse; ?>">
   </div></fieldset >
  
-<input type="submit" class="btn btn-primary" value="Crear">
+<?php if ( isset($idma) != null  && $idma != 0  ){ ?>
+   <input type="submit" class="btn btn-primary" value="Crear">
+<?php }else{ ?>
+
+<fieldset disabled><input type="submit" class="btn btn-primary" value="Crear"></fieldset>
+<?php } ?>
 
 </form>	
   
@@ -330,35 +427,7 @@ else { ?>
       </div>
       <!-- /.container -->
 	  
-	  <div class="modal-wrapper" id="popup3">
-   <div class="popup3-contenedor">
-    <form action="interrupcion.php?id=<?php echo $idf?>" method ="post">
-	  <center><h3>¿Que actividad provocó la interrupcion?</h3> </center>
-	  <center><select name="intr">
-	  <option value ="1">Llamada telefonica</option>
-      <option value ="2">Consulta presencial</option>
-      <option value ="3">Mantenimiento</option></select></center>
-	   
-	  <br></br>
-      <center><input type="submit" value="registrar"></center>
-	  <a class="popup3-cerrar" href="#one">X</a>
-	  </form>
-   </div>
-   </div>
-<div class="modal-wrapper" id="popup4">
-     
-   <div class="popup4-contenedor">
-   <form action="validaractividad.php?id=<?php echo $idf?>&btn=finalizar" method ="post">
-    
-	  <center><h3>Comentarios</h3> </center>
-	  <center>
-	  <input  type="text" name="comentario">
-	  </center><br></br>
-      <center><input  type="submit" value="registrar"></center>
-	  <a class="popup4-cerrar" href="#one">X</a>
-	  </form>
-   </div>
-   </div>
+	  
     </aside>
     <!-- /.banner -->
      
@@ -371,6 +440,8 @@ else { ?>
 	
   
     <!-- Bootstrap core JavaScript -->
+    <script src="assets/js/validator.js"></script>
+    <script src="assets/js/validator.min.js"></script>
     <script src="vendor/jquery/jquery.min.js"></script>
     <script src="vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
 
@@ -382,201 +453,6 @@ function change(){
 </script>
 
 
-
-	<script language="JavaScript">
-	/* Determinamos el tiempo total en segundos */
-    <?php if($x==0){?>
-	var totalTiempo= <?php echo $tt; ?>;
-<?php } else{?>
-
- totalTiempo=totalTiempo;//tiempo en segundos
-<?php }?>
-
-var timestampStart = new Date().getTime();
-
-var endTime=timestampStart+(totalTiempo*1000);
-
-var timestampEnd=endTime-new Date().getTime();
-
-
-/* Variable que contiene el tiempo restante */
-
-var tiempRestante=totalTiempo;
-
-
-/* Ejecutamos la funcion updateReloj() al cargar la pagina */
-
-updateReloj();
-
-
-function updateReloj() {
-
-    var Seconds=tiempRestante;
-
-    
-
-    var Days = Math.floor(Seconds / 86400);
-
-    Seconds -= Days * 86400;
-
-
-    var Hours = Math.floor(Seconds / 3600);
-
-    Seconds -= Hours * (3600);
-
-
-    var Minutes = Math.floor(Seconds / 60);
-
-    Seconds -= Minutes * (60);
-
-
-    var TimeStr = ((Days > 0) ? Days + " dias " : "") + LeadingZero(Hours) + ":" + LeadingZero(Minutes) + ":" + LeadingZero(Seconds);
-
-    /* Este muestra el total de hora, aunque sea superior a 24 horas */
-
-    //var TimeStr = LeadingZero(Hours+(Days*24)) + ":" + LeadingZero(Minutes) + ":" + LeadingZero(Seconds);
-
-
-    document.getElementById('CuentaAtras').innerHTML = TimeStr;
-
-
-    
-
-        /* Restamos un segundo al tiempo restante */
-
-        tiempRestante+=1;
-
-        /* Ejecutamos nuevamente la función al pasar 1000 milisegundos (1 segundo) */
-
-        setTimeout("updateReloj()",1000);
-
-    
-
-}
-
-
-/* Funcion que pone un 0 delante de un valor si es necesario */
-
-function LeadingZero(Time) {
-
-    return (Time < 10) ? "0" + Time : + Time;
-
-}
-
-
-
-</script>
-<?php function tiempo_total($t,$c,$x)
-{
-	$id =$t;
-	$con =$c;
-		 //Verificar tiempo pausa
-		 $queryv="SELECT COUNT(idpausa)as pausa FROM `pausa` WHERE idactividad='$id'";
-       $resultv= mysqli_query($con,$queryv)or die(mysqli_error());
-      while($rowv=mysqli_fetch_array($resultv)) {
-     
-   
-         $pausav= $rowv['pausa'];
-	     
-	  
-   }
-		 $total = null;
-		 if($pausav==0){
-			$querysp="SELECT timediff(now(),hora_ini)as tiempo FROM actividad WHERE idactividad='$id'";
-       $resultsp= mysqli_query($con,$querysp)or die(mysqli_error());
-      while($rowsp=mysqli_fetch_array($resultsp)) {
-     
-   
-         $total= $rowsp['tiempo'];
-	  
-	  
-   }
-			 
-			 return  $total ;
-		 }else{
-		 
-		 
-		 
-  
-    //primer valor
-       $e = new DateTime('00:00');
-	   $f = clone $e;
-       $query1="SELECT timediff(MIN(hora_pausa),hora_ini)as hora_pausa FROM actividad,pausa WHERE pausa.idactividad='$id' and actividad.idactividad='$id'";
-       $result1= mysqli_query($con,$query1)or die(mysqli_error());
-      while($row1=mysqli_fetch_array($result1)) {
-     
-   
-         $hora_pausa1= $row1['hora_pausa'];
-	     $pausa1 = new DateTime($hora_pausa1);
-	     $auxpausa1 = new DateTime("00:00");
-		 
-		   $dteDiff1   = $pausa1->diff($auxpausa1);
-	     $dteDiff1  ->format("%H:%I:%S");
-	     $e->add($dteDiff1);
-	     $f->diff($e);
-	  
-   }
-	
-	 
-	  
-  //segundo  valor
-      $i=0;
-      $hora_pausa[]="";
-	  $hora_reinicio[]="";
-      $query2="SELECT * FROM `pausa` WHERE idactividad='$id'";
-      $result= mysqli_query($con,$query2)or die(mysqli_error());
-   while($row=mysqli_fetch_array($result)) {
-     
-   
-      $hora_pausa[$i]= $row['hora_pausa'];
-	  $hora_reinicio[$i] = $row['hora_reinicio']; 
-	
-	 $i=$i+1;
-	  }
-	  
-	  $t=sizeof($hora_pausa);
-	 //  $t;
-	 
-	  for($j=1;$j<$t;$j++)
-	  {
-		   $datetime1 = new DateTime( $hora_pausa[$j]);
-	       $datetime2 = new DateTime($hora_reinicio[$j-1]);
-		  
-		 
-		  $dteDiff   = $datetime1->diff($datetime2);
-		 $dteDiff->format("%H:%I:%S");
-		
-         $e->add($dteDiff);
-		
-       //
-	  }
-	  
-	  if($x==1){
-	 $query3="Select timediff(TIME(NOW()),(SELECT TIME(hora_reinicio) FROM `pausa` where idactividad='$id' and hora_reinicio = (SELECT MAX( hora_reinicio ) FROM pausa)))as tiempo";
-       $result3= mysqli_query($con,$query3)or die(mysqli_error());
-      while($row3=mysqli_fetch_array($result3)) {
-     
-   
-         $hora_pausa3= $row3['tiempo'];
-	     $pausa3 = new DateTime($hora_pausa3);
-	     $auxpausa3 = new DateTime("00:00");
-		 
-		   $dteDiff3   = $pausa3->diff($auxpausa3);
-	     $dteDiff3  ->format("%H:%I:%S");
-	     $e->add($dteDiff3);
-	     $f->diff($e);
-	  }
-   }
-  
-	 $total = $f->diff($e)->format("%H:%I:%S");//suma de valores intermedios	
-	
-    return  $total ;
-		 }
-}
-function segundos_a_hora($hora) { 
-    list($h, $m, $s) = explode(':', $hora); 
-    return ($h * 3600) + ($m * 60) + $s; 
-} ?>
   </body>
 
 </html>
