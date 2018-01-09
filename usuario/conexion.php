@@ -1,4 +1,4 @@
-<?php
+    <?php
   $con = mysqli_connect("127.0.0.1","root","", "team_board");
     if (!$con) {
         echo "Error: No se pudo conectar a MySQL." . PHP_EOL;
